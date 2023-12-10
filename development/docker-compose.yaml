@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  night-tasker-postgres:
+    container_name: night-tasker-postgres
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: $DB_POSTGRES_USERNAME
+      POSTGRES_PASSWORD: $DB_POSTGRES_PASSWORD
+    ports:
+      - 5432:5432
+
+  night-tasker-passport:
+    container_name: night-tasker-passport
+    build:
+      context: ../../backend/passport/src
+      dockerfile: ../infra/Dockerfile
+    ports:
+      - 5000:8080
+    environment:
+      ConnectionStrings__Database: $PASSPORT_DB_POSTGRES_CONNECTION_STRING
+
+  night-tasker-frontend-react-app:
+    container_name: night-tasker-frontend-react-app
+    build:
+      context: ../../frontend/react-app/src
+      dockerfile: ../infra/Dockerfile
+      args:
+        PASSPORT_API_PATH: $PASSPORT_API_PATH
+    ports:
+      - 3000:80
