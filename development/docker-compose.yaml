@@ -11,15 +11,15 @@ services:
     ports:
       - 5432:5432
 
-  night-tasker-passport:
-    container_name: night-tasker-passport
+  night-tasker-identity:
+    container_name: night-tasker-identity
     build:
-      context: ../../backend/passport/src
+      context: ../../backend/identity/src
       dockerfile: ../infra/Dockerfile
     ports:
       - 5000:8080
     environment:
-      ConnectionStrings__Database: $PASSPORT_DB_POSTGRES_CONNECTION_STRING
+      ConnectionStrings__Database: $IDENTITY_DB_POSTGRES_CONNECTION_STRING
 
   night-tasker-frontend-react-app:
     container_name: night-tasker-frontend-react-app
@@ -27,6 +27,6 @@ services:
       context: ../../frontend/react-app/src
       dockerfile: ../infra/Dockerfile
       args:
-        PASSPORT_API_PATH: $PASSPORT_API_PATH
+        IDENTITY_API_PATH: $IDENTITY_API_PATH
     ports:
       - 3000:80
