@@ -17,9 +17,19 @@ services:
       context: ../../frontend/react-app/src
       dockerfile: ../infra/Dockerfile
       args:
-        IDENTITY_API_PATH: $IDENTITY_API_PATH
+        API_PATH: $API_PATH
     ports:
       - 3000:80
+
+  night-tasker-api-gateway:
+    container_name: night-tasker-api-gateway
+    build:
+      context: ../../backend/api-gateways/api-gateway/src
+      dockerfile: ../infra/Dockerfile
+    ports:
+      - 5000:8080
+    environment:
+      Paths__Identity__Host: $IDENTITY_PATH
 
   night-tasker-identity:
     container_name: night-tasker-identity
@@ -27,7 +37,7 @@ services:
       context: ../../backend/identity/src
       dockerfile: ../infra/Dockerfile
     ports:
-      - 5000:8080
+      - 5001:8080
     environment:
       ConnectionStrings__Database: $IDENTITY_DB_POSTGRES_CONNECTION_STRING
       RabbitMqSettings__Username: $RABBITMQ_USERNAME
@@ -42,7 +52,7 @@ services:
       context: ../../backend/user-hub/src
       dockerfile: ../infra/Dockerfile
     ports:
-      - 5001:8080
+      - 5002:8080
     environment:
       ConnectionStrings__Database: $USER_HUB_DB_POSTGRES_CONNECTION_STRING
       RabbitMqSettings__Username: $RABBITMQ_USERNAME
@@ -51,8 +61,8 @@ services:
       RabbitMqSettings__VirtualHost: $RABBITMQ_VIRTUALHOST
       RabbitMqSettings__Port: $RABBITMQ_PORT
 
-  rabbit-mq:
-    container_name: rabbit-mq
+  night-tasker-rabbit-mq:
+    container_name: night-tasker-rabbit-mq
     image: masstransit/rabbitmq:3.12
     ports:
       - 5672:5672
