@@ -29,7 +29,8 @@ services:
     ports:
       - 5000:8080
     environment:
-      Paths__Identity__Host: $IDENTITY_PATH
+      RouteConfigurationSettings__Identity__Host: $IDENTITY_MICROSERVICE_PATH
+      RouteConfigurationSettings__UserHub__Host: $USER_HUB_MICROSERVICE_PATH
 
   night-tasker-identity:
     container_name: night-tasker-identity
