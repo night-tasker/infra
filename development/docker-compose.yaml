@@ -61,6 +61,28 @@ services:
       RabbitMqSettings__Host: $RABBITMQ_HOST
       RabbitMqSettings__VirtualHost: $RABBITMQ_VIRTUALHOST
       RabbitMqSettings__Port: $RABBITMQ_PORT
+      StorageGrpcSettings__Host: $STORAGE_GRPC_HOST
+      StorageGrpcSettings__Port: $STORAGE_GRPC_PORT
+      StorageGrpcSettings__BucketName: $STORAGE_GRPC_BUCKET_NAME
+
+  night-tasker-storage:
+    container_name: night-tasker-storage
+    build:
+      context: ../../backend/storage/src
+      dockerfile: ../infra/Dockerfile
+    ports:
+      - 5003:5003
+      - 5004:5004
+    environment:
+      RabbitMqSettings__Username: $RABBITMQ_USERNAME
+      RabbitMqSettings__Password: $RABBITMQ_PASSWORD
+      RabbitMqSettings__Host: $RABBITMQ_HOST
+      RabbitMqSettings__VirtualHost: $RABBITMQ_VIRTUALHOST
+      RabbitMqSettings__Port: $RABBITMQ_PORT
+      MinioSettings__Endpoint: $MINIO_ENDPOINT
+      MinioSettings__AccessKey: $MINIO_ACCESS_KEY
+      MinioSettings__SecretKey: $MINIO_SECRET_KEY
+      MinioSettings__PreSignedObjectsExpiryRange: $MINIO_PRE_SIGNED_OBJECTS_EXPIRY_RANGE
 
   night-tasker-rabbit-mq:
     container_name: night-tasker-rabbit-mq
@@ -71,3 +93,19 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: $RABBITMQ_USERNAME
       RABBITMQ_DEFAULT_PASS: $RABBITMQ_PASSWORD
+
+  night-tasker-minio:
+    container_name: night-tasker-minio
+    image: quay.io/minio/minio
+    command: server /data --console-address ":9001"
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: $MINIO_ACCESS_KEY
+      MINIO_ROOT_PASSWORD: $MINIO_SECRET_KEY
+    volumes:
+      - ~/data1:/data
+
+volumes:
+  data1:
