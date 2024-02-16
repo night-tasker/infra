@@ -87,6 +87,7 @@ services:
   night-tasker-rabbit-mq:
     container_name: night-tasker-rabbit-mq
     image: masstransit/rabbitmq:3.12
+    restart: always
     ports:
       - 5672:5672
       - 15672:15672
@@ -97,6 +98,7 @@ services:
   night-tasker-minio:
     container_name: night-tasker-minio
     image: quay.io/minio/minio
+    restart: always
     command: server /data --console-address ":9001"
     ports:
       - 9000:9000
