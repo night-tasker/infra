@@ -11,16 +11,6 @@ services:
     ports:
       - 5432:5432
 
-  night-tasker-frontend-react-app:
-    container_name: night-tasker-frontend-react-app
-    build:
-      context: ../../frontend/react-app/src
-      dockerfile: ../infra/Dockerfile
-      args:
-        API_PATH: $API_PATH
-    ports:
-      - 3000:80
-
   night-tasker-api-gateway:
     container_name: night-tasker-api-gateway
     build:
@@ -83,6 +73,21 @@ services:
       MinioSettings__AccessKey: $MINIO_ACCESS_KEY
       MinioSettings__SecretKey: $MINIO_SECRET_KEY
       MinioSettings__PreSignedObjectsExpiryRange: $MINIO_PRE_SIGNED_OBJECTS_EXPIRY_RANGE
+
+  night-tasker-task-tracker:
+    container_name: night-tasker-task-tracker
+    build:
+      context: ../../backend/task-tracker/src
+      dockerfile: ../infra/Dockerfile
+    ports:
+      - 5005:8080
+    environment:
+      ConnectionStrings__Database: $TASK_TRACKER_DB_POSTGRES_CONNECTION_STRING
+      RabbitMqSettings__Username: $RABBITMQ_USERNAME
+      RabbitMqSettings__Password: $RABBITMQ_PASSWORD
+      RabbitMqSettings__Host: $RABBITMQ_HOST
+      RabbitMqSettings__VirtualHost: $RABBITMQ_VIRTUALHOST
+      RabbitMqSettings__Port: $RABBITMQ_PORT
 
   night-tasker-rabbit-mq:
     container_name: night-tasker-rabbit-mq
